@@ -1,0 +1,35 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url('assets/images/your-background-image.jpg'); /* Replace with your actual image path */
+    background-size: contain; /* Adjust the size to fit the screen while keeping aspect ratio */
+    background-repeat: no-repeat; /* No repeating background */
+    background-position: center; /* Centers the background image */
+    background-color: #f0f0f0; /* Fallback background color */
+    height: 100vh; /* Full height of the viewport */
+    width: 100vw; /* Full width of the viewport */
+    overflow: hidden; /* Prevents scrolling if content overflows */
+}
+
+#canvasContainer {
+    position: relative;
+    height: 100%; /* Ensures the canvas takes up the full height of the container */
+    width: 100%; /* Ensures the canvas takes up the full width of the container */
+}
+
+/* JOYPAD */
+#joypad {
+    position: absolute;
+    bottom: 20px; /* Adds space from the bottom for better visibility */
+    right: 20px; /* Adds space from the right for better visibility */
+    width: 145px;
+}
+
+#joypad .top {
+    text-align: center;
+    width: inherit;
+}
+
+#joypad .bottom {
+    width: inherit;
+}

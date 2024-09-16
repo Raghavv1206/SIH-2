@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>TT GameHub</title>
+    <style>
+        /* Styling for the info box */
+        #info-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: beige;
+            border: 2px solid #d3d3d3;
+            border-radius: 10px;
+            padding: 15px;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            color: #333;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            width: 250px;
+            text-align: center;
+        }
+
+        /* Styling for the new sections */
+        .game-sections {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .game-section {
+            padding: 15px 30px;
+            border: 2px solid #d3d3d3;
+            border-radius: 10px;
+            background-color: white;
+            font-family: "Protest Guerrilla", sans-serif;
+            color: black;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 23px;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+        .game-section:hover {
+            background-color: black;
+            color: white;
+        }
+
+        /* Styling for selected section */
+        .selected {
+            background-color: black;
+            color: white;
+        }
+
+        /* Styling for game boxes */
+        .box {
+            display: inline-block;
+            margin: 20px;
+            opacity: 0;
+            transform: translateY(-50px);
+            transition: opacity 0.3s ease, transform 0.2s ease; /* Increased transition time */
+        }
+
+        /* Initially hide all games except for the "All Games" option */
+        .game-box {
+            display: none;
+        }
+
+        /* Show boxes for all games by default */
+        .game-box.all {
+            display: inline-block;
+        }
+
+        /* Slide-in animation */
+        .slide-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mainh1">TT GameHub</h1>
+
+        <!-- New game sections -->
+        <div class="game-sections">
+            <div class="game-section" data-age="all">All Games</div>
+            <div class="game-section" data-age="5">Age 5 and Above</div>
+            <div class="game-section" data-age="10">Age 10 and Above</div>
+            <div class="game-section" data-age="13">Age 13 and Above</div>
+        </div>
+
+        <!-- Info box for visit count and session time -->
+        <div id="info-box"></div>
+
+        <!-- Game boxes -->
+        <div class="box game-box all 5">
+            <a href="./math-snake-webbuild-main/index.html">
+                <img src="images/img1.png" alt="Math Snake">
+                <div class="myh1 hoverh1">Math Snake</div>
+            </a>
+        </div>
+        <div class="box game-box all 5">
+            <a href="./Coil-master/index.html">
+                <img src="images/img22.png" alt="Coil Master">
+                <div class="myh2 hoverh1">Coil Master</div>
+            </a>
+        </div>
+        <div class="box game-box all 13">
+            <a href="./chemical-equations-main/index.html">
+                <img src="images/img3.png" alt="Chemical Equation">
+                <div class="myh3 hoverh1">Chemical Equation</div>
+            </a>
+        </div>
+        <div class="box game-box all 5">
+            <a href="./Maze3D-master/index.html">
+                <img src="images/preview-laby.png" alt="Maze3D-master">
+                <div class="myh4 hoverh1">Maze3D-master</div>
+            </a>
+        </div>
+        <div class="box game-box all 10">
+            <a href="./the-aviator-master/index.html">
+                <img src="images/logo.png" alt="The Aviator-Master">
+                <div class="myh5 hoverh1">The Aviator-Master</div>
+            </a>
+        </div>
+        <div class="box game-box all 10">
+            <a href="./swap-master/index.html">
+                <img src="images/thumbnail.png" alt="Swap-Master">
+                <div class="myh6 hoverh1">Swap-Master</div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Function to get today's date as a string
+        function getTodayDate() {
+            const today = new Date();
+            return today.toISOString().split('T')[0]; // Returns date in YYYY-MM-DD format
+        }
+
+        // Track number of visits for the day
+        function trackDailyVisits() {
+            const today = getTodayDate();
+            let visitData = JSON.parse(localStorage.getItem('visitData')) || {};
+
+            // If not today's date, reset the count
+            if (visitData.date !== today) {
+                visitData = { date: today, count: 0, totalDuration: 0 };
+            }
+
+            // Increment the visit count for today
+            visitData.count += 1;
+            localStorage.setItem('visitData', JSON.stringify(visitData));
+
+            return visitData.count;
+        }
+
+        // Track session start time and session end
+        function trackSessionDuration() {
+            const sessionStart = Date.now();
+
+            window.addEventListener('beforeunload', () => {
+                const sessionEnd = Date.now();
+                const sessionDuration = Math.floor((sessionEnd - sessionStart) / 1000); // Session duration in seconds
+
+                // Retrieve visit data from localStorage and update the duration
+                let visitData = JSON.parse(localStorage.getItem('visitData'));
+                visitData.totalDuration += sessionDuration;
+                localStorage.setItem('visitData', JSON.stringify(visitData));
+            });
+        }
+
+        // Display visit count and total session duration
+        function displayInfo() {
+            const visitData = JSON.parse(localStorage.getItem('visitData')) || { count: 0, totalDuration: 0 };
+
+            document.getElementById('info-box').innerHTML = `
+                <strong>Today's Activity</strong><br><br>
+                Visits: <strong>${visitData.count}</strong><br>
+                Time Spent: <strong>${Math.floor(visitData.totalDuration / 60)} min ${visitData.totalDuration % 60} sec</strong>
+            `;
+        }
+
+        // Initialize tracking
+        const visitCount = trackDailyVisits();
+        trackSessionDuration();
+        displayInfo();
+
+        // Function to filter the game boxes based on age category
+        const sections = document.querySelectorAll('.game-section');
+        const gameBoxes = document.querySelectorAll('.game-box');
+
+        let selectedSection = document.querySelector('.game-section[data-age="all"]'); // Default selected section
+
+        // Function to handle section click and toggle selection state
+        sections.forEach(section => {
+            section.addEventListener('click', () => {
+                const ageGroup = section.getAttribute('data-age');
+
+                // Reset the previously selected section
+                selectedSection.classList.remove('selected');
+                selectedSection = section;
+
+                // Highlight the new selected section
+                section.classList.add('selected');
+
+                // Hide all boxes and remove the slide-in class
+                gameBoxes.forEach(box => {
+                    box.style.display = 'none';
+                    box.classList.remove('slide-in');
+                });
+
+                // After a reduced delay, show the relevant boxes and apply the slide-in animation
+                setTimeout(() => {
+                    gameBoxes.forEach(box => {
+                        if (ageGroup === 'all' || box.classList.contains(ageGroup)) {
+                            box.style.display = 'inline-block';
+                            setTimeout(() => {
+                                box.classList.add('slide-in');
+                            }, 20); // Reduced delay to trigger the transition effect
+                        }
+                    });
+                }, 100); // Increased delay to hide boxes first
+            });
+        });
+
+        // Simulate user click on "All Games" when page loads
+        window.addEventListener('load', () => {
+            selectedSection.click();
+        });
+    </script>
+</body>
+</html>
